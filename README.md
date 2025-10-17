@@ -26,6 +26,12 @@ mkdir -p instance
 touch instance/config.py
 ```
 
+Initialize environment file and fill it (or copy and paste the whole file):
+
+```bash
+touch .env
+```
+
 Run:
 
 ```bash
