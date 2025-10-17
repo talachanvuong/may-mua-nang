@@ -26,7 +26,7 @@ def create_app():
         if not google.authorized:
             return redirect(url_for('landing.index'))
 
-        exp = google.token['expired_at']
+        exp = google.token['expires_at']
         now = datetime.now(timezone.utc).timestamp()
         if now >= exp:
             return redirect(url_for('landing.index'))
