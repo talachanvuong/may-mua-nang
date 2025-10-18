@@ -1,12 +1,11 @@
-from flask import Blueprint, redirect, render_template, url_for
-from flask_dance.contrib.google import google
+from flask import Blueprint, render_template
+
+from app.utils.decorators import anonymous_required
 
 landing_dp = Blueprint('landing', __name__)
 
 
 @landing_dp.route('/')
+@anonymous_required
 def index():
-    if not google.authorized:
-        return render_template('landing.html')
-    else:
-        return redirect(url_for(''))  # Set value to homepage
+    return render_template('landing.html')
