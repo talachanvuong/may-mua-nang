@@ -1,6 +1,7 @@
 from dotenv import load_dotenv
 from flask import Flask
 
+import app.contexts as ctx
 import app.views as bp
 from app.extensions import db
 
@@ -13,5 +14,6 @@ def create_app():
 
     db.init_app(app)
     bp.init_app(app)
+    ctx.init_app(app)
 
     return app
