@@ -15,14 +15,7 @@ google_bp = make_google_blueprint(
 
 @oauth_authorized.connect_via(google_bp)
 def logged_in(blueprint, token):
-    if not token:
-        return False
-
-    resp = blueprint.session.get('/oauth2/v2/userinfo')
-    if not resp.ok:
-        return False
-
-    rawData = resp.json()
+    rawData = UserService.fetch()
     email = rawData['email']
 
     data = {
