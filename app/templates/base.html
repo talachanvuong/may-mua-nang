@@ -21,9 +21,11 @@
         </svg>
       </a>
 
+      <!-- weather -->
       <a
         class="p-2 transition-all duration-200 cursor-pointer rounded-xl hover:bg-gray-100 active:scale-90"
         title="Tra cứu thời tiết"
+        href="{{ url_for('weather.search') }}"
       >
         <svg class="w-8 h-8 fill-gray-800" viewBox="0 -960 960 960">
           <path
