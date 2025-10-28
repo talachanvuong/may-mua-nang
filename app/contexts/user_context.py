@@ -1,8 +1,7 @@
 from datetime import datetime, timezone
 
+from flask import session
 from flask_dance.contrib.google import google
-
-from app.services.user_service import UserService
 
 
 def inject_photo_url():
@@ -11,9 +10,18 @@ def inject_photo_url():
 
     exp = google.token['expires_at']
     now = datetime.now(timezone.utc).timestamp()
+
     if now >= exp:
         return dict()
 
-    user = UserService.me_info()
+    user = session['user']
     photo_url = user['photo_url']
+
     return dict(photo_url=photo_url)
+
+
+def inject_theme():
+    if 'theme' not in session:
+        return dict()
+
+    return dict(theme=session['theme'])

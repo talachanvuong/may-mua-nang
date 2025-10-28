@@ -1,22 +1,25 @@
 {% extends "base.html" %} {% block content %}
-<div
-  class="flex flex-col items-center justify-center p-8 mx-auto bg-white shadow-2xl w-fit rounded-xl"
->
-  <img
-    src="{{ user.photo_url }}"
-    class="w-32 h-32 mb-6 rounded-full shadow-md"
-  />
+<div class="flex items-start justify-center gap-5">
+  <div class="flex flex-col items-center justify-center p-8 bg-white shadow-2xl dark:bg-slate-800 w-fit rounded-xl">
+    <img src="{{ user.photo_url }}" class="w-32 h-32 mb-6 rounded-full shadow-md" />
 
-  <p class="mb-2 text-3xl font-bold text-gray-800">{{ user.display_name }}</p>
+    <p class="mb-2 text-3xl font-bold text-gray-800 dark:text-slate-100">{{ user.display_name }}</p>
 
-  <p class="text-lg text-gray-600">{{ user.email }}</p>
+    <p class="text-lg text-gray-500 dark:text-slate-300">{{ user.email }}</p>
 
-  <a
-    href="{{ url_for('user.logout') }}"
-    class="px-6 py-2 mt-6 font-semibold text-white transition bg-red-500 rounded-lg shadow hover:bg-red-600"
-  >
-    Đăng xuất
-  </a>
+    <a href="{{ url_for('user.logout') }}" class="px-6 py-2 mt-6 font-semibold text-white transition bg-red-500 rounded-lg shadow hover:bg-red-600">Đăng xuất</a>
+  </div>
+
+  <form method="post" class="flex flex-col items-center justify-center p-8 space-y-4 bg-white shadow-2xl dark:bg-slate-800 w-fit rounded-xl">
+    <p class="text-lg font-bold text-gray-800 dark:text-slate-100">Giao diện</p>
+
+    <button type="submit" name="theme" value="light" class="w-12 h-12 rounded-lg cursor-pointer border border-gray-300 bg-gray-50 {% if theme == 'light' %}ring-2 ring-blue-500{% endif %}"></button>
+
+    <button type="submit" name="theme" value="dark" class="w-12 h-12 bg-slate-900 rounded-lg cursor-pointer border border-gray-300 {% if theme == 'dark' %}ring-2 ring-blue-500{% endif %}"></button>
+
+    <button type="submit" name="theme" value="scenic" class="w-12 h-12 overflow-hidden rounded-lg cursor-pointer border border-gray-300 {% if theme == 'scenic' %}ring-2 ring-blue-500{% endif %}">
+      <video src="https://motionbgs.com/media/8148/frieren-quiet-ripples.960x540.mp4" autoplay muted loop class="object-cover w-full h-full"></video>
+    </button>
+  </form>
 </div>
-
 {% endblock %}

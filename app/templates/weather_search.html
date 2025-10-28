@@ -1,0 +1,75 @@
+{% extends "base.html" %} {% block content %}
+<div class="flex flex-col items-center justify-center gap-5">
+  <form method="get" class="flex flex-col items-center justify-center p-8 space-y-4 bg-white shadow-2xl dark:bg-slate-800 w-fit rounded-xl">
+    <p class="text-3xl font-bold text-gray-800 dark:text-slate-100">Tra cứu thời tiết</p>
+
+    <div class="flex items-center justify-center gap-2">
+      <input type="text" name="keyword" class="px-4 py-2 bg-white border border-gray-300 rounded-lg shadow focus:ring-2 focus:ring-blue-500 focus:outline-none text-slate-800 dark:bg-slate-800 dark:text-white" required />
+
+      <button type="submit" class="px-6 py-2 font-semibold text-white transition bg-blue-500 rounded-lg shadow hover:bg-blue-600">Tìm kiếm</button>
+    </div>
+  </form>
+
+  {% if keyword %}
+  <div class="flex flex-col items-center justify-center w-1/2 p-8 space-y-4 bg-white shadow-2xl dark:bg-slate-800 rounded-xl">
+    <p class="text-3xl font-bold text-gray-800 dark:text-slate-100">Kết quả tìm kiếm cho "{{ keyword }}"</p>
+
+    <ul class="w-full space-y-2">
+      {% for result in results %}
+      <li class="flex items-center p-4 border border-gray-300 rounded-lg bg-gray-50 dark:bg-slate-900">
+        <div class="flex-1">
+          <p class="font-semibold text-gray-800 dark:text-slate-100">{{ result.name }}</p>
+
+          {% if result.admin1 %}
+          <p class="text-gray-500 dark:text-slate-300">{{ result.admin1 }}</p>
+          {% endif %} {% if result.country %}
+          <p class="text-gray-500 dark:text-slate-300">{{ result.country }}</p>
+          {% endif %}
+        </div>
+
+        <div class="flex gap-2">
+          {% if not result.is_favorited %}
+          <form method="post" action="{{ url_for('favorite.add') }}">
+            <input type="hidden" name="id" value="{{ result.id }}" />
+
+            <input type="hidden" name="name" value="{{ result.name }}" />
+
+            {% if result.admin1 %}
+            <input type="hidden" name="admin1" value="{{ result.admin1 }}" />
+            {% endif %} {% if result.country %}
+            <input type="hidden" name="country" value="{{ result.country }}" />
+            {% endif %}
+
+            <input type="hidden" name="latitude" value="{{ result.latitude }}" />
+
+            <input type="hidden" name="longitude" value="{{ result.longitude }}" />
+
+            <button type="submit" class="px-6 py-2 font-semibold text-white transition bg-red-500 rounded-lg shadow hover:bg-red-600">♥</button>
+          </form>
+          {% endif %}
+
+          <form method="get" action="{{ url_for('weather.info') }}">
+            <input type="hidden" name="name" value="{{ result.name }}" />
+
+            {% if result.admin1 %}
+            <input type="hidden" name="admin1" value="{{ result.admin1 }}" />
+            {% endif %} {% if result.country %}
+            <input type="hidden" name="country" value="{{ result.country }}" />
+            {% endif %}
+
+            <input type="hidden" name="latitude" value="{{ result.latitude }}" />
+
+            <input type="hidden" name="longitude" value="{{ result.longitude }}" />
+
+            <button type="submit" class="px-6 py-2 font-semibold text-white transition bg-blue-500 rounded-lg shadow hover:bg-blue-600">Xem</button>
+          </form>
+        </div>
+      </li>
+      {% else %}
+      <li class="text-gray-500 dark:text-slate-300">Không có kết quả</li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

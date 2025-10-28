@@ -1,0 +1,77 @@
+{% extends "base.html" %} {% block content %}
+<div class="flex items-start w-full gap-5">
+  <form method="get" class="flex flex-col p-8 space-y-4 bg-white shadow-2xl basis-1/3 dark:bg-slate-800 rounded-xl">
+    <div>
+      <p class="mb-2 text-lg font-bold text-gray-800 dark:text-slate-100">Thông tin:</p>
+
+      <div class="p-4 border border-gray-300 rounded-lg bg-gray-50 dark:bg-slate-900">
+        <p class="font-semibold text-gray-800 dark:text-slate-100">{{ info.name }}</p>
+
+        {% if info.admin1 %}
+        <p class="text-gray-500 dark:text-slate-300">{{ info.admin1 }}</p>
+        {% endif %} {% if info.country %}
+        <p class="text-gray-500 dark:text-slate-300">{{ info.country }}</p>
+        {% endif %}
+      </div>
+
+      <input type="hidden" name="name" value="{{ info.name }}" />
+
+      {% if info.admin1 %}
+      <input type="hidden" name="admin1" value="{{ info.admin1 }}" />
+      {% endif %} {% if info.country %}
+      <input type="hidden" name="country" value="{{ info.country }}" />
+      {% endif %}
+
+      <input type="hidden" name="latitude" value="{{ info.latitude }}" />
+
+      <input type="hidden" name="longitude" value="{{ info.longitude }}" />
+    </div>
+
+    <div>
+      <p class="mb-2 text-lg font-bold text-gray-800 dark:text-slate-100">Chọn thời gian:</p>
+
+      <input type="date" name="time" value="{{ info.time }}" min="{{ info.minDay }}" max="{{ info.maxDay }}" class="w-full px-4 py-2 bg-white border border-gray-300 rounded-lg shadow focus:ring-2 focus:ring-blue-500 focus:outline-none text-slate-800 dark:bg-slate-800 dark:text-white" required />
+    </div>
+
+    <div>
+      <p class="mb-2 text-lg font-bold text-gray-800 dark:text-slate-100">Chọn thông số:</p>
+
+      <div class="flex flex-wrap gap-2">
+        <input type="radio" id="temperature" name="option" value="temperature_2m" {% if info.option == 'temperature_2m' %}checked{% endif %} class="hidden peer/temperature" />
+        <label for="temperature" class="flex-grow px-2 py-2 text-center text-white bg-gray-500 rounded-lg cursor-pointer hover:bg-gray-600 peer-checked/temperature:bg-blue-500">Nhiệt độ</label>
+
+        <input type="radio" id="humidity" name="option" value="relative_humidity_2m" {% if info.option == 'relative_humidity_2m' %}checked{% endif %} class="hidden peer/humidity" />
+        <label for="humidity" class="flex-grow px-2 py-2 text-center text-white bg-gray-500 rounded-lg cursor-pointer hover:bg-gray-600 peer-checked/humidity:bg-blue-500">Độ ẩm</label>
+
+        <input type="radio" id="cloud" name="option" value="cloud_cover" {% if info.option == 'cloud_cover' %}checked{% endif %} class="hidden peer/cloud" />
+        <label for="cloud" class="flex-grow px-2 py-2 text-center text-white bg-gray-500 rounded-lg cursor-pointer hover:bg-gray-600 peer-checked/cloud:bg-blue-500">Mây che phủ</label>
+
+        <input type="radio" id="windSpeed" name="option" value="wind_speed_10m" {% if info.option == 'wind_speed_10m' %}checked{% endif %} class="hidden peer/windSpeed" />
+        <label for="windSpeed" class="flex-grow px-2 py-2 text-center text-white bg-gray-500 rounded-lg cursor-pointer hover:bg-gray-600 peer-checked/windSpeed:bg-blue-500">Tốc độ gió</label>
+
+        <input type="radio" id="windDirection" name="option" value="wind_direction_10m" {% if info.option == 'wind_direction_10m' %}checked{% endif %} class="hidden peer/windDirection" />
+        <label for="windDirection" class="flex-grow px-2 py-2 text-center text-white bg-gray-500 rounded-lg cursor-pointer hover:bg-gray-600 peer-checked/windDirection:bg-blue-500">Hướng gió</label>
+
+        <input type="radio" id="rainRate" name="option" value="precipitation_probability" {% if info.option == 'precipitation_probability' %}checked{% endif %} class="hidden peer/rainRate" />
+        <label for="rainRate" class="flex-grow px-2 py-2 text-center text-white bg-gray-500 rounded-lg cursor-pointer hover:bg-gray-600 peer-checked/rainRate:bg-blue-500">Khả năng mưa</label>
+
+        <input type="radio" id="rain" name="option" value="precipitation" {% if info.option == 'precipitation' %}checked{% endif %} class="hidden peer/rain" />
+        <label for="rain" class="flex-grow px-2 py-2 text-center text-white bg-gray-500 rounded-lg cursor-pointer hover:bg-gray-600 peer-checked/rain:bg-blue-500">Lượng mưa</label>
+
+        <input type="radio" id="uv" name="option" value="uv_index" {% if info.option == 'uv_index' %}checked{% endif %} class="hidden peer/uv" />
+        <label for="uv" class="flex-grow px-2 py-2 text-center text-white bg-gray-500 rounded-lg cursor-pointer hover:bg-gray-600 peer-checked/uv:bg-blue-500">UV</label>
+      </div>
+    </div>
+
+    <button type="submit" class="px-6 py-2 font-semibold text-white transition bg-blue-500 rounded-lg shadow hover:bg-blue-600">Xác nhận</button>
+  </form>
+
+  <div class="flex flex-col p-8 space-y-4 bg-white shadow-2xl basis-2/3 dark:bg-slate-800 rounded-xl">
+    <div>
+      <p class="mb-2 text-lg font-bold text-gray-800 dark:text-slate-100">Biểu đồ:</p>
+
+      {{ chart|safe }}
+    </div>
+  </div>
+</div>
+{% endblock %}

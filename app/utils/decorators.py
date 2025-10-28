@@ -13,8 +13,12 @@ def token_required(f):
 
         exp = google.token['expires_at']
         now = datetime.now(timezone.utc).timestamp()
+
         if now >= exp:
             session.pop('google_oauth_token', None)
+            session.pop('user', None)
+            session.pop('location', None)
+
             return redirect(url_for('landing.index'))
 
         return f(*args, **kwargs)
@@ -27,6 +31,7 @@ def anonymous_required(f):
         if google.authorized:
             exp = google.token['expires_at']
             now = datetime.now(timezone.utc).timestamp()
+
             if now < exp:
                 return redirect(url_for('user.me'))
 
