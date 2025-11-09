@@ -6,6 +6,7 @@ from flask import Blueprint, render_template, request, session
 from plotly.offline import plot
 
 from app.services.favorite_service import FavoriteService
+from app.services.log_service import LogService
 from app.services.weather_service import WeatherService
 from app.utils.decorators import token_required
 
@@ -26,6 +27,13 @@ def search():
             is_favorited = FavoriteService.get_by_place(user['id'], result['id'])
             result['is_favorited'] = True if is_favorited else False
 
+        log = {
+            'message': f'Đã tìm kiếm khu vực <b class="text-blue-500">{keyword}</b>',
+            'user': user['id']
+        }
+
+        LogService.add(log)
+
         return render_template('weather_search.html', keyword=keyword, results=results)
 
     return render_template('weather_search.html')
@@ -35,6 +43,7 @@ def search():
 @token_required
 def info():
     location = session['location']
+    user = session['user']
 
     today = date.today()
     minDay = today - relativedelta(months=3)
@@ -58,11 +67,15 @@ def info():
         'option': option
     }
 
+    area = name
+
     if admin1:
         info['admin1'] = admin1
+        area += f', {admin1}'
 
     if country:
         info['country'] = country
+        area += f', {country}'
 
     hours = [f'{hour}:00' for hour in range(24)]
     now = f'{datetime.now().hour}:00'
@@ -125,5 +138,31 @@ def info():
     }
 
     chart = plot(fig, output_type='div', include_plotlyjs=True, config=config)
+
+    if option == 'temperature_2m':
+        option_name = 'nhiệt độ'
+    elif option == 'relative_humidity_2m':
+        option_name = 'độ ẩm'
+    elif option == 'cloud_cover':
+        option_name = 'mây che phủ'
+    elif option == 'wind_speed_10m':
+        option_name = 'tốc độ gió'
+    elif option == 'wind_direction_10m':
+        option_name = 'hướng gió'
+    elif option == 'precipitation_probability':
+        option_name = 'khả năng mưa'
+    elif option == 'precipitation':
+        option_name = 'lượng mưa'
+    elif option == 'uv_index':
+        option_name = 'UV'
+
+    converted_time = datetime.strptime(str(time), '%Y-%m-%d').strftime('%d/%m/%Y')
+
+    log = {
+        'message': f'Đã xem <b class="text-blue-500">{option_name}</b> vào <b class="text-blue-500">{converted_time}</b> tại khu vực <b class="text-blue-500">{area}</b>',
+        'user': user['id']
+    }
+
+    LogService.add(log)
 
     return render_template('weather_info.html', info=info, chart=chart)

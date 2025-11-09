@@ -1,0 +1,17 @@
+{% extends "base.html" %} {% block content %}
+<div class="flex flex-col items-center justify-center w-1/2 p-8 mx-auto space-y-4 bg-white shadow-2xl dark:bg-slate-800 rounded-xl">
+  <p class="text-3xl font-bold text-gray-800 dark:text-slate-100">Lịch sử tra cứu</p>
+
+  <ul class="w-full space-y-2">
+    {% for log in logs %}
+    <li class="p-4 border border-gray-300 rounded-lg bg-gray-50 dark:bg-slate-900">
+      <p class="font-semibold text-gray-800 dark:text-slate-100">{{ log.message|safe }}</p>
+
+      <p class="text-gray-500 dark:text-slate-300">{{ log.created_at }}</p>
+    </li>
+    {% else %}
+    <li class="text-gray-500 dark:text-slate-300">Không có lịch sử tra cứu</li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
