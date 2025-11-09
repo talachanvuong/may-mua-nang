@@ -13,7 +13,7 @@ class FavoriteService:
 
     @staticmethod
     def get_all(user_id):
-        return Favorite.objects(user=user_id)
+        return Favorite.objects(user=user_id).order_by('-created_at')
 
     @staticmethod
     def get_by_place(user_id, place):
