@@ -46,8 +46,8 @@ def info():
     user = session['user']
 
     today = date.today()
-    minDay = today - relativedelta(months=3)
-    maxDay = today + timedelta(days=16)
+    minDay = today - relativedelta(months=2)
+    maxDay = today + timedelta(days=15)
 
     name = request.args.get('name', location['district'])
     admin1 = request.args.get('admin1')
