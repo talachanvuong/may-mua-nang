@@ -1,8 +1,10 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta
 from functools import wraps
 
 from flask import redirect, session, url_for
 from flask_dance.contrib.google import google
+
+from app.services.track_service import TrackService
 
 
 def token_required(f):
@@ -11,10 +13,11 @@ def token_required(f):
         if not google.authorized:
             return redirect(url_for('landing.index'))
 
-        exp = google.token['expires_at']
-        now = datetime.now(timezone.utc).timestamp()
+        user = session['user']
+        track = TrackService.get_by_access_token(user['id'], google.token['access_token'])
+        now = datetime.now()
 
-        if now >= exp:
+        if not track or now >= track.expires_at + timedelta(hours=7):
             session.pop('google_oauth_token', None)
             session.pop('user', None)
             session.pop('location', None)
@@ -29,10 +32,11 @@ def anonymous_required(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
         if google.authorized:
-            exp = google.token['expires_at']
-            now = datetime.now(timezone.utc).timestamp()
+            user = session['user']
+            track = TrackService.get_by_access_token(user['id'], google.token['access_token'])
+            now = datetime.now()
 
-            if now < exp:
+            if track and now < track.expires_at + timedelta(hours=7):
                 return redirect(url_for('user.me'))
 
         return f(*args, **kwargs)

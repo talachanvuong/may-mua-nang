@@ -1,7 +1,11 @@
-from flask import session
+from datetime import datetime, timezone
+
+from flask import request, session
 from flask_dance.consumer import oauth_authorized
 from flask_dance.contrib.google import make_google_blueprint
+from user_agents import parse
 
+from app.services.track_service import TrackService
 from app.services.user_service import UserService
 from app.utils.decorators import anonymous_required
 
@@ -23,13 +27,13 @@ def _():
 
 @oauth_authorized.connect_via(google_bp)
 def logged_in(blueprint, token):
-    rawData = blueprint.session.get('/oauth2/v2/userinfo').json()
-    email = rawData['email']
+    raw_data = blueprint.session.get('/oauth2/v2/userinfo').json()
+    email = raw_data['email']
 
     data = {
-        'display_name': rawData['name'],
+        'display_name': raw_data['name'],
         'email': email,
-        'photo_url': rawData['picture']
+        'photo_url': raw_data['picture']
     }
 
     user = UserService.get_by_email(email)
@@ -47,3 +51,16 @@ def logged_in(blueprint, token):
     }
 
     session.setdefault('theme', 'light')
+
+    raw_ua = request.headers['User-Agent']
+    ua = parse(raw_ua)
+
+    track_data = {
+        'access_token': token['access_token'],
+        'expires_at': datetime.fromtimestamp(token['expires_at'], tz=timezone.utc),
+        'os': ua.os.family,
+        'browser': ua.browser.family,
+        'user': user.id
+    }
+
+    TrackService.add(track_data)

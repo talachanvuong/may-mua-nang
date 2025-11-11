@@ -1,18 +1,21 @@
-from datetime import datetime, timezone
+from datetime import datetime, timedelta
 
 import requests
 from flask import current_app, session
 from flask_dance.contrib.google import google
+
+from app.services.track_service import TrackService
 
 
 def inject_location():
     if not google.authorized:
         return dict()
 
-    exp = google.token['expires_at']
-    now = datetime.now(timezone.utc).timestamp()
+    user = session['user']
+    track = TrackService.get_by_access_token(user['id'], google.token['access_token'])
+    now = datetime.now()
 
-    if now >= exp:
+    if not track or now >= track.expires_at + timedelta(hours=7):
         return dict()
 
     params = {

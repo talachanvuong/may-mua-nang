@@ -1,5 +1,9 @@
-from flask import Blueprint, redirect, render_template, request, session, url_for
+from datetime import datetime, timedelta
 
+from flask import Blueprint, redirect, render_template, request, session, url_for
+from flask_dance.contrib.google import google
+
+from app.services.track_service import TrackService
 from app.utils.decorators import token_required
 
 user_bp = Blueprint('user', __name__)
@@ -14,7 +18,15 @@ def me():
 
         return redirect(url_for('user.me'))
 
-    return render_template('user_me.html', user=session['user'])
+    user = session['user']
+    tracks = TrackService.get_all(user['id'])
+    now = datetime.now()
+
+    for track in tracks:
+        track.is_this_device = google.token['access_token'] == track['access_token']
+        track.is_valid = now < track.expires_at + timedelta(hours=7)
+
+    return render_template('user_me.html', user=user, tracks=tracks)
 
 
 @user_bp.route('/logout')

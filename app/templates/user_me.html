@@ -21,5 +21,37 @@
       <video src="https://motionbgs.com/media/8148/frieren-quiet-ripples.960x540.mp4" autoplay muted loop class="object-cover w-full h-full"></video>
     </button>
   </form>
+
+  <div class="flex flex-col w-1/2 p-8 space-y-4 bg-white shadow-2xl dark:bg-slate-800 rounded-xl">
+    <p class="text-lg font-bold text-gray-800 dark:text-slate-100">Phiên:</p>
+
+    <ul class="w-full space-y-2">
+      {% for track in tracks %}
+      <li class="flex items-center p-4 border border-gray-300 rounded-lg bg-gray-50 dark:bg-slate-900">
+        <div class="flex-1">
+          {% if track.is_this_device %}
+          <p class="text-green-500">Thiết bị này</p>
+          {% endif %} {% if not track.is_valid %}
+          <p class="text-red-500">Hết hạn</p>
+          {% endif %}
+
+          <p class="max-w-xs font-semibold text-gray-800 truncate dark:text-slate-100">{{ track.access_token }}</p>
+
+          <p class="text-gray-500 dark:text-slate-300">{{ track.os }}</p>
+
+          <p class="text-gray-500 dark:text-slate-300">{{ track.browser }}</p>
+        </div>
+
+        <form method="post" action="{{ url_for('track.remove') }}">
+          <input type="hidden" name="access_token" value="{{ track.access_token }}" />
+
+          <button type="submit" class="px-6 py-2 font-semibold text-white transition bg-red-500 rounded-lg shadow hover:bg-red-600">Xoá</button>
+        </form>
+      </li>
+      {% else %}
+      <li class="text-gray-500 dark:text-slate-300">Không có phiên</li>
+      {% endfor %}
+    </ul>
+  </div>
 </div>
 {% endblock %}
