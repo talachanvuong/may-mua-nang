@@ -11,7 +11,7 @@
   </form>
 
   {% if keyword %}
-  <div class="flex flex-col items-center justify-center w-1/2 p-8 space-y-4 bg-white shadow-2xl dark:bg-slate-800 rounded-xl">
+  <div class="flex flex-col items-center justify-center w-2/3 p-8 space-y-4 bg-white shadow-2xl dark:bg-slate-800 rounded-xl">
     <p class="text-3xl font-bold text-gray-800 dark:text-slate-100">Kết quả tìm kiếm cho "{{ keyword }}"</p>
 
     <ul class="w-full space-y-2">
@@ -48,6 +48,22 @@
           </form>
           {% endif %}
 
+          <form method="get" action="{{ url_for('weather.forecast14') }}">
+            <input type="hidden" name="name" value="{{ result.name }}" />
+
+            {% if result.admin1 %}
+            <input type="hidden" name="admin1" value="{{ result.admin1 }}" />
+            {% endif %} {% if result.country %}
+            <input type="hidden" name="country" value="{{ result.country }}" />
+            {% endif %}
+
+            <input type="hidden" name="latitude" value="{{ result.latitude }}" />
+
+            <input type="hidden" name="longitude" value="{{ result.longitude }}" />
+
+            <button type="submit" class="px-6 py-2 font-semibold text-white transition bg-blue-500 rounded-lg shadow hover:bg-blue-600">Xem dự báo</button>
+          </form>
+
           <form method="get" action="{{ url_for('weather.info') }}">
             <input type="hidden" name="name" value="{{ result.name }}" />
 
@@ -61,7 +77,7 @@
 
             <input type="hidden" name="longitude" value="{{ result.longitude }}" />
 
-            <button type="submit" class="px-6 py-2 font-semibold text-white transition bg-blue-500 rounded-lg shadow hover:bg-blue-600">Xem</button>
+            <button type="submit" class="px-6 py-2 font-semibold text-white transition bg-blue-500 rounded-lg shadow hover:bg-blue-600">Xem chuyên sâu</button>
           </form>
         </div>
       </li>

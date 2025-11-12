@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% import "macros.html" as macros %}
+
+{% block content %}
+
+<div class="flex flex-col items-center justify-center py-8">
+  <h1 class="mb-6 text-2xl font-semibold text-gray-800 dark:text-slate-100">
+    Dự báo thời tiết {{ area }}
+  </h1>
+
+  <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    {% for f in forecasts %}
+    <div class="p-6 text-center transition-shadow duration-300 bg-white shadow-lg rounded-2xl hover:shadow-2xl dark:bg-slate-800">
+      <!-- Ngày -->
+      <div class="mb-2 text-lg font-bold text-gray-800 dark:text-slate-100">
+        {{ f.date }}
+      </div>
+
+      <!-- Nhiệt độ và biểu tượng -->
+      <div class="flex items-center justify-center gap-2 mb-2 text-3xl font-bold text-blue-600">
+        {{ macros.weather_icon(f.weathercode) }} {{ f.temperature_mean }}°C
+      </div>
+
+      <!-- Thông tin chi tiết -->
+      <div class="space-y-1 text-sm text-gray-700 dark:text-slate-200">
+        <p>🌡 Nhiệt độ: <b>{{ f.temperature_max }}°C / {{ f.temperature_min }}°C</b></p>
+        <p>💧 Độ ẩm: <b>{{ f.humidity }}%</b></p>
+        <p>☁️ Mây che phủ: <b>{{ f.cloud_cover }}%</b></p>
+        <p>🌧️ Lượng mưa: <b>{{ f.precipitation }} mm</b> ({{ f.precipitation_chance }}%)</p>
+        <p>💨 Tốc độ gió: <b>{{ f.wind_speed }} km/h</b></p>
+        <p>🌞 UV Index: 
+          <b class="
+            {% if f.uv_index >= 8 %}text-red-600{% elif f.uv_index >= 6 %}text-yellow-500{% else %}text-green-600{% endif %}
+          ">{{ f.uv_index }}</b>
+        </p>
+        <p>🪫 AQI: 
+          <b class="
+            {% if f.aqi is not none %}
+              {% if f.aqi <= 50 %}text-green-600
+              {% elif f.aqi <= 100 %}text-yellow-500
+              {% else %}text-red-600{% endif %}
+            {% else %}text-gray-400{% endif %}
+          ">{{ f.aqi if f.aqi is not none else "N/A" }}</b>
+        </p>
+      </div>
+
+      <!-- 🔔 Cảnh báo -->
+      {% if f.alerts %}
+      <div class="pt-3 mt-4 text-left border-t border-gray-200">
+        <h3 class="mb-1 text-sm font-semibold text-gray-800 dark:text-slate-100">⚠️ Cảnh báo:</h3>
+        <ul class="space-y-1 text-xs text-gray-700 dark:text-slate-200">
+          {% for alert in f.alerts %}
+            <li class="pl-2 before:content-['•'] before:mr-1 before:text-red-500">{{ alert }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
