@@ -17,6 +17,12 @@
     {% endif %}
 
     <div class="fixed top-0 flex items-center justify-between gap-5 px-4 py-3 -translate-x-1/2 bg-white shadow-md dark:bg-slate-800 left-1/2 rounded-bl-2xl rounded-br-2xl">
+      <a class="p-2 transition-all duration-200 cursor-pointer rounded-xl hover:bg-gray-100 active:scale-90 dark:hover:bg-slate-950" title="Xem bản đồ thời tiết" href="{{ url_for('weather.map') }}">
+        <svg class="w-8 h-8 fill-gray-800 dark:fill-slate-100" viewBox="0 -960 960 960">
+          <path d="m612-120-263-93-179 71q-17 9-33.5-1T120-173v-558q0-13 7.5-23t19.5-15l202-71 263 92 178-71q17-8 33.5 1.5T840-788v565q0 11-7.5 19T814-192l-202 72Zm-34-75v-505l-196-66v505l196 66Zm60 0 142-47v-512l-142 54v505Zm-458-12 142-54v-505l-142 47v512Zm458-493v505-505Zm-316-66v505-505Z" />
+        </svg>
+      </a>
+
       <a class="p-2 transition-all duration-200 cursor-pointer rounded-xl hover:bg-gray-100 active:scale-90 dark:hover:bg-slate-950" title="Tra cứu thời tiết" href="{{ url_for('weather.search') }}">
         <svg class="w-8 h-8 fill-gray-800 dark:fill-slate-100" viewBox="0 -960 960 960">
           <path d="M251-160q-88 0-149.5-61.5T40-371q0-78 50-137t127-71q20-97 94-158.5T482-799q112 0 189 81.5T748-522v24q72-2 122 46.5T920-329q0 69-50 119t-119 50H251Zm0-60h500q45 0 77-32t32-77q0-45-32-77t-77-32h-63v-84q0-91-61-154t-149-63q-88 0-149.5 63T267-522h-19q-62 0-105 43.5T100-371q0 63 44 107t107 44Zm229-260Z" />

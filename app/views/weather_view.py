@@ -1,14 +1,17 @@
 from datetime import date, datetime, timedelta
 
+import folium
 import plotly.graph_objs as go
 import requests
 from dateutil.relativedelta import relativedelta
 from flask import Blueprint, render_template, request, session
+from folium.features import DivIcon
 from plotly.offline import plot
 
 from app.services.favorite_service import FavoriteService
 from app.services.log_service import LogService
 from app.services.weather_service import WeatherService
+from app.utils.convert import weather_icon
 from app.utils.decorators import token_required
 
 weather_bp = Blueprint('weather', __name__)
@@ -339,3 +342,43 @@ def forecast14():
         d['date'] = datetime.strptime(str(d['date']), '%Y-%m-%d').strftime('%d/%m/%Y')
 
     return render_template("forecast14.html", forecasts=data, area=area)
+
+
+@weather_bp.route('/map')
+@token_required
+def map():
+    user = session['user']
+    favorites = FavoriteService.get_all(user['id'])
+    data = WeatherService.map(favorites)
+
+    map = folium.Map()
+
+    locations = []
+
+    for d in data:
+        latitude = d['latitude']
+        longitude = d['longitude']
+        area = d['area']
+        weather_code = weather_icon(d['weather_code'])
+        temperature_2m = d['temperature_2m']
+
+        locations.append([latitude, longitude])
+
+        folium.Marker(
+            location=[latitude, longitude],
+            popup=folium.Popup(area, max_width=9999),
+            icon=DivIcon(
+                icon_size=(80, 60),
+                icon_anchor=(40, 30),
+                html=f'''
+                    <div style="text-align: center; background-color: rgba(255, 255, 255, 0.8); border-radius: 16px">
+                        <p style="font-size: 36px">{weather_code}</p>
+                        <p style="font-size: 18px; font-weight: bold">{temperature_2m} °C</p>
+                    </div>
+                '''
+            )
+        ).add_to(map)
+
+    map.fit_bounds(locations)
+
+    return render_template('weather_map.html', map=map._repr_html_())
