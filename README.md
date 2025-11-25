@@ -2,6 +2,32 @@
 
 The weather website.
 
+## Preview
+
+### Login
+
+![Login](assets/images/login.png)
+
+### Me
+
+![Me](assets/images/me.png)
+
+### Search
+
+![Search](assets/images/search.png)
+
+### Search result
+
+![Search result](assets/images/search-result.png)
+
+### Detail
+
+![Detail](assets/images/detail.png)
+
+### Map
+
+![Map](assets/images/map.png)
+
 ## Setup
 
 > Change the terminal to `Bash`
